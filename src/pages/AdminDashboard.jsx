@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
+import { Navigate } from 'react-router-dom'
 import { db } from '../firebase'
+import { useAuth } from '../context/AuthContext'
 
 const AdminDashboard = () => {
+  const { user, loading } = useAuth()
   const [userCount, setUserCount] = useState(0)
 
   useEffect(() => {
@@ -13,6 +16,12 @@ const AdminDashboard = () => {
 
     loadUsers()
   }, [])
+
+  if (loading) return <div className="p-8">Loading...</div>
+
+  if (!user || user.email !== 'admin@raingamestore.com') {
+    return <Navigate to="/" replace />
+  }
 
   return (
     <div className="p-8">
